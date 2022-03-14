@@ -1,0 +1,17 @@
+Package: subsampler
+Type: Package
+Title: Model Distributions of Total Counts from Random Subsample counts
+Version: 0.1.0
+Imports:
+    boot
+Authors@R: person("Christopher J", "Walsh", email = "cwalsh@unimelb.edu.au", role = c("aut","cre"),comment = c(ORCID = "0000-0002-4181-6722"))
+Description: Estimates parameters of a Gamma distribution describing the likely
+    total count in a subsampled sample given the subsample proportion and the 
+    count in the subsample. Also simulates a random box subsampler.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
