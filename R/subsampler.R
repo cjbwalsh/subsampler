@@ -5,6 +5,9 @@
 #' @param N The total number of specimens in the sample
 #' @param n_iter the number of repeated subsamples (with replacement) to be
 #'     simulated
+#' @param set_random_seed If NULL, R's random seed generator is used.
+#'     Alternatively, a random seed can be specified to achieve a reproducible
+#'     result. The function resets to R's generator after running.
 #' @return a vector of length n_iter of counts in the subsample
 #' @details the function simulates the process of evenly spreading the sample
 #'     across the 100 cells (allocating each of the N specimens to a cell drawn
@@ -13,7 +16,8 @@
 #' @examples
 #'      box_ss(10,200,10)
 
-box_ss <- function(ss = 10, N = 200, n_iter = 1e5){
+box_ss <- function(ss = 10, N = 200, n_iter = 1e5, set_random_seed = NULL){
+  set.seed(set_random_seed)
   for(i in 1:n_iter){
     # Distribute the N randomly across the 100 cells of the subsampler
     N_by_cell <- sample(1:100,size = N, replace = TRUE)
@@ -28,6 +32,7 @@ box_ss <- function(ss = 10, N = 200, n_iter = 1e5){
       count_ss <- c(count_ss,sum(mixi$x[mixi$cell %in% ssi]))
     }
   }
+  set.seed(NULL)
   count_ss
 }
 
