@@ -60,24 +60,24 @@ box_ss <- function(ss = 10, N = 200, n_iter = 1e5, set_random_seed = NULL){
 
 gamma_params_from_s_c <- function(ss_proportion,count_in_subsample){
   if(ss_proportion < 0.1)  warning('Function not validated for values of s < 0.1.')
+  if(ss_proportion < 1)
   d_var <- T_var(ss_proportion, count_in_subsample)
   mo <- count_in_subsample/ss_proportion
   if(count_in_subsample > 0 | ss_proportion == 1){
-    rate <- (sqrt(4*d_var + mo^2) + mo)/(2*d_var)
-    shape <- d_var * rate^2
-  }else{
-    #if count = 0, shape = 1, and pgamma(1,1,rate) == s
+    if(ss_proportion == 1){
+      d_var <- 0
+      mo <- count_in_subsample
+      rate <- 100
+      shape <- ifelse(count_in_subsample == 0, 1, rate * count_in_subsample)
+      # This ensures that 100% of probability density is within +/- 1% of mode
+       }else{
+        rate <- (sqrt(4*d_var + mo^2) + mo)/(2*d_var)
+        shape <- d_var * rate^2}
+     }else{
+    #if count = 0 and s < 1, shape = 1, and pgamma(1,1,rate) == s
     shape <- 1
     rate <- rate_for_c_zero(ss_proportion)
     d_var <- NA; mo <- NA;
-  }
-  #if ss_proportion = 1, reduce uncertainty of estimate to very small
-  if(ss_proportion == 1){
-    d_var <- 0
-    mo <- count_in_subsample
-    rate <- 100
-    shape <- ifelse(count_in_subsample == 0, 1, rate * count_in_subsample)
-    # This ensures that 100% of probability density is within +/- 1% of mode
   }
   list(d_var = d_var, mo = mo,
        rate = rate, shape = shape)
