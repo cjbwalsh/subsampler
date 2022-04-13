@@ -59,6 +59,8 @@ box_ss <- function(ss = 10, N = 200, n_iter = 1e5, set_random_seed = NULL){
 #'           type = 'l',xlab = "T", ylab = "Density", las = 1)
 
 gamma_params_from_s_c <- function(ss_proportion,count_in_subsample){
+  if(ss_proportion < 0.1)  warning('Function not validated for values of s < 0.1.')
+  if(ss_proportion > 0.97)  warning('Function not validated for values of s > 0.97')
   d_var <- T_var(ss_proportion, count_in_subsample)
   mo <- count_in_subsample/ss_proportion
   if(count_in_subsample > 0 | ss_proportion == 1){
@@ -72,6 +74,8 @@ gamma_params_from_s_c <- function(ss_proportion,count_in_subsample){
   }
   #if ss_proportion = 1, reduce uncertainty of estimate to very small
   if(ss_proportion == 1){
+    d_var <- 0
+    mo <- count_in_subsample
     rate <- 100
     shape <- ifelse(count_in_subsample == 0, 1, rate * count_in_subsample)
     # This ensures that 100% of probability density is within +/- 1% of mode
@@ -128,15 +132,11 @@ rate_for_c_zero <- function(s){
 #'   calculate var_slope and var_intercept were determined as described by Walsh
 #'   (2022) Measurement-error models improve prediction from subsampled data
 #'   (See code chunk c_var_params, and Fig S1-2 in Appendix S1.
-T_var <- function(s, c){
-  if(s < 0.1)  warning('T_var function not validated for values of s < 0.1')
-  if(s <= 0.97 | s == 1){
 
-    var_slope <- exp((2.39158304156454 - 0.655937162356925 * boot::logit(ifelse(s == 1, 0.97, s)))^(3/2) - 3)
-    var_intercept <- (0.924434851724143 + 0.146287449980632 * boot::logit(ifelse(s == 1, 0.97, s)))^(-9)
-    out_var <- var_intercept + var_slope * c
-  }else{
-    out_var <- NA
-  }
+T_var <- function(ss_proportion,count_in_subsample){
+  if(ss_proportion < 0.1)  warning('T_var function not validated for values of s < 0.1')
+  if(ss_proportion > 0.97)  warning('T_var function not validated for values of s > 0.97')
+    out_var <- (count_in_subsample + 1)*(0.3139303 + 0.1246125*(boot::logit(ss_proportion) + 5))^-11
   out_var
 }
+
