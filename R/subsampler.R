@@ -60,7 +60,6 @@ box_ss <- function(ss = 10, N = 200, n_iter = 1e5, set_random_seed = NULL){
 
 gamma_params_from_s_c <- function(ss_proportion,count_in_subsample){
   if(ss_proportion < 0.1)  warning('Function not validated for values of s < 0.1.')
-  if(ss_proportion > 0.97)  warning('Function not validated for values of s > 0.97')
   d_var <- T_var(ss_proportion, count_in_subsample)
   mo <- count_in_subsample/ss_proportion
   if(count_in_subsample > 0 | ss_proportion == 1){
